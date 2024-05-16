@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo } from 'react';
+import { useGetRandomPokemon, useRandomMovesForPokemon } from './lib/queries/queriesAndMutations';
+import PokemonCard from './components/PokemonCard';
+import Battle from './components/Battle';
+import { getRandomNumber } from './lib/utils';
 
-function App() {
+
+const App: React.FC = () => {
+  const rightPokemonId = useMemo(() => getRandomNumber(1, 151), []);
+  const leftPokemonId = useMemo(() => getRandomNumber(1, 151), []);
+
+  const { data: rightPokemon } = useGetRandomPokemon(rightPokemonId);
+  const { data: leftPokemon } = useGetRandomPokemon(leftPokemonId);
+
+  const { data: rightMove } = useRandomMovesForPokemon(rightPokemon);
+  const { data: leftMove } = useRandomMovesForPokemon(leftPokemon);
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <h1 className="app-title">Pokemon Battle</h1>
+    <div className="battle-container">
+
+      {rightPokemon && rightMove && (
+        <PokemonCard pokemon={rightPokemon} move={rightMove} className="pokemon-card pokemon-right" />
+      )}
+
+      {leftPokemon && leftMove && (
+        <PokemonCard pokemon={leftPokemon} move={leftMove} className="pokemon-card pokemon-left" />
+      )}
+
+      {rightPokemon && leftPokemon && rightMove && leftMove && (
+        <Battle
+          rightPokemon={rightPokemon}
+          leftPokemon={leftPokemon}
+          rightMove={rightMove}
+          leftMove={leftMove}
+        />
+      )}
     </div>
+  </div>
   );
-}
+};
 
 export default App;
+
