@@ -7,13 +7,16 @@ const Battle: React.FC<{ rightPokemon: any, leftPokemon: any, rightMove: any, le
     const rightMovePower = rightMove?.power || 0;
     const leftMovePower = leftMove?.power || 0;
 
-    if (rightMovePower > leftMovePower) {
-        setResult(`${rightPokemon.name} lands a decisive blow with ${rightMove.name}, knocking out ${leftPokemon.name}!`);
-      } else if (rightMovePower < leftMovePower) {
-        setResult(`${leftPokemon.name} lands a decisive blow with ${leftMove.name}, knocking out ${rightPokemon.name}!`);
-      } else {
+    if (rightMovePower === leftMovePower) {
         setResult("It's a tie!");
+        return;
       }
+
+      const winner = rightMovePower > leftMovePower ? rightPokemon : leftPokemon;
+      const loser = rightMovePower > leftMovePower ? leftPokemon : rightPokemon;
+      const winningMove = rightMovePower > leftMovePower ? rightMove : leftMove;
+  
+      setResult(`${winner.name} lands a decisive blow with ${winningMove.name}, knocking out ${loser.name}!`);
   };
 
   return (
